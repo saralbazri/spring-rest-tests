@@ -1,9 +1,9 @@
 package com.worldline.fpl.recruitment.json;
 
+import org.springframework.http.HttpStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import org.springframework.http.HttpStatus;
 
 /**
  * Error code
@@ -14,7 +14,8 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorCode {
 
-	INVALID_ACCOUNT(HttpStatus.NOT_FOUND);
+	INVALID_ACCOUNT(HttpStatus.NOT_FOUND),
+	INVALID_TRANSACTION(HttpStatus.FORBIDDEN);
 
 	@Getter
 	private HttpStatus httpStatus;

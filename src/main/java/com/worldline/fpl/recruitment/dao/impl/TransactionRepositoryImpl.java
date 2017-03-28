@@ -56,6 +56,13 @@ public class TransactionRepositoryImpl implements TransactionRepository,
 	}
 
 	@Override
+	public Transaction findById(String id) {
+		return transactions.stream()
+				.filter(transaction -> transaction.getId().equals(id))
+				.findFirst().orElse(null);
+	}
+
+	@Override
 	public Page<Transaction> getTransactionsByAccount(String accountId,
 			Pageable p) {
 		return new PageImpl<Transaction>(transactions.stream()

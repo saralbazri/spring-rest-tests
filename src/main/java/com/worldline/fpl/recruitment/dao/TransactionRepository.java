@@ -13,6 +13,16 @@ import com.worldline.fpl.recruitment.entity.Transaction;
  */
 public interface TransactionRepository {
 
+
+	/**
+	 * Get transaction by Id
+	 *
+	 * @param id
+	 *            id of the transaction to get
+	 * @return the transaction corresponding to the given id or null
+	 */
+	Transaction findById(String id);
+
 	/**
 	 * Get transactions by account
 	 * 
