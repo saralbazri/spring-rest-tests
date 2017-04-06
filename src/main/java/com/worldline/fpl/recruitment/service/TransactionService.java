@@ -46,7 +46,7 @@ public class TransactionService {
 	public Page<TransactionResponse> getTransactionsByAccount(String accountId,
 			Pageable p) {
 		if (!accountService.isAccountExist(accountId)) {
-			throw new ServiceException(ErrorCode.INVALID_ACCOUNT,
+			throw new ServiceException(ErrorCode.NOT_FOUND_ACCOUNT,
 					"Account doesn't exist");
 		}
 		return new PageImpl<TransactionResponse>(transactionRepository

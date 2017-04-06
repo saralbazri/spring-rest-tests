@@ -2,8 +2,6 @@ package com.worldline.fpl.recruitment.service;
 
 import java.util.stream.Collectors;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -16,6 +14,8 @@ import com.worldline.fpl.recruitment.exception.ServiceException;
 import com.worldline.fpl.recruitment.json.AccountDetailsResponse;
 import com.worldline.fpl.recruitment.json.AccountResponse;
 import com.worldline.fpl.recruitment.json.ErrorCode;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Account service
@@ -68,7 +68,7 @@ public class AccountService {
 	public AccountDetailsResponse getAccountDetails(String accountId) {
 		log.debug("Find account {}", accountId);
 		Account account = accountRepository.findById(accountId).orElseThrow(
-				() -> new ServiceException(ErrorCode.INVALID_ACCOUNT,
+				() -> new ServiceException(ErrorCode.NOT_FOUND_ACCOUNT,
 						"Account doesn't exist"));
 		return mapToAccountDetailsResponse(account);
 	}
