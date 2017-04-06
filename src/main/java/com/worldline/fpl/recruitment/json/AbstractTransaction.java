@@ -1,7 +1,5 @@
 package com.worldline.fpl.recruitment.json;
 
-import io.swagger.annotations.ApiModelProperty;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -21,11 +19,9 @@ public abstract class AbstractTransaction implements Serializable {
 	private static final long serialVersionUID = 7866293071140304316L;
 
 	@NotNull
-	@ApiModelProperty(value = "Number", required = true)
 	private String number;
 
 	@NotNull
-	@ApiModelProperty(value = "Balance", required = true)
 	private BigDecimal balance;
 
 }
