@@ -34,6 +34,6 @@ public class TransactionTest extends AbstractTest {
 	public void getTransactionsOnUnexistingAccount() throws Exception {
 		mockMvc.perform(get("/accounts/3/transactions"))
 				.andExpect(status().isNotFound())
-				.andExpect(jsonPath("$.errorCode", is("INVALID_ACCOUNT")));
+				.andExpect(jsonPath("$.errorCode", is("NOT_FOUND_ACCOUNT")));
 	}
 }
