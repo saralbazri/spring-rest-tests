@@ -14,8 +14,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ErrorCode {
 
-	INVALID_ACCOUNT(HttpStatus.NOT_FOUND),
-	INVALID_TRANSACTION(HttpStatus.FORBIDDEN);
+	NOT_FOUND_ACCOUNT(HttpStatus.NOT_FOUND),
+	NOT_FOUND_TRANSACTION(HttpStatus.NOT_FOUND),
+	FORBIDDEN_TRANSACTION(HttpStatus.FORBIDDEN);
 
 	@Getter
 	private HttpStatus httpStatus;
