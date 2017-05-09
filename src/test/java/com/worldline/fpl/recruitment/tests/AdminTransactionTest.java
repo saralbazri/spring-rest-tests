@@ -1,8 +1,10 @@
 package com.worldline.fpl.recruitment.tests;
 
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
@@ -89,15 +91,22 @@ public class AdminTransactionTest extends AbstractTest {
 	@Test
 	public void deleteTransactionWhichNotBelongToTheAccount() throws Exception {
 		mockMvc.perform(delete("/accounts/2/transactions/2")).andExpect(
-				status().isForbidden());
+				status().isForbidden()).
+				andExpect(jsonPath("$.errorCode", is("FORBIDDEN_TRANSACTION")));
 	}
 
 	@Test
 	public void deleteUnexistingTransaction() throws Exception {
 		mockMvc.perform(delete("/accounts/1/transactions/99")).andExpect(
-				status().isNotFound());
+				status().isNotFound())
+				.andExpect(jsonPath("$.errorCode", is("NOT_FOUND_TRANSACTION")));
 	}
-
+	@Test
+	public void deleteTransactionFromUnexistingAccount() throws Exception {
+		mockMvc.perform(delete("/accounts/4/transactions/1"))
+		.andExpect(status().isNotFound())
+		.andExpect(jsonPath("$.errorCode", is("NOT_FOUND_ACCOUNT")));
+	}
 	/**
 	 * Get json request from test file
 	 * 

@@ -44,4 +44,22 @@ public class TransactionControllerImpl implements TransactionController {
 		}
 		return ResponseEntity.ok().body(page);
 	}
+
+	/**
+	 * Remove transaction from account
+	 * @param accountId
+	 * 			The account ID
+	 * @param transactionId
+	 * 			The transaction id
+	 * @return
+	 * 			The response entity
+	 */
+	@Override
+	public ResponseEntity<Void> deleteTransactionsByAccount(@PathVariable("accountId") String accountId,
+			@PathVariable("transactionId") String transactionId) {
+		log.debug("Deleting transaction:"+transactionId+" From account: "+accountId);
+		this.transactionService.deleteTransactionByAccount(accountId, transactionId);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+	}
 }
+

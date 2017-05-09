@@ -33,4 +33,19 @@ public interface TransactionController {
 	ResponseEntity<Page<TransactionResponse>> getTransactionsByAccount(
 			@PathVariable("accountId") String accountId,
 			@PageableDefault Pageable p);
+	
+	/**
+	 * Remove transaction from account
+	 * @param accountId
+	 * 			The account Id
+	 * @param transactionId
+	 * 			The transaction Id
+	 * @return
+	 * 			The response entity
+	 */
+	@RequestMapping(value = "/{transactionId}", method = RequestMethod.DELETE)
+	ResponseEntity<Void> deleteTransactionsByAccount(
+	@PathVariable("accountId") String accountId,
+	@PathVariable("transactionId") String transactionId);
 }
+
