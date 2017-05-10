@@ -74,7 +74,7 @@ public class AdminTransactionTest extends AbstractTest {
 
 	@Test
 	public void updateTransactionBadRequest() throws Exception {
-		String request = "test";
+		String request =getRequest("createBadRequest");
 
 		mockMvc.perform(
 				put("/accounts/1/transactions/3").contentType(

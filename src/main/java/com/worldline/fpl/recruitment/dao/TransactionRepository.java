@@ -64,4 +64,26 @@ public interface TransactionRepository {
 	 */
 	boolean transactionBelongToAccount(String accountId,String transactionId);
 	
+	
+	/**
+	 * add a new transaction
+	 * @param accountId
+	 * 			The account id
+	 * @param transaction
+	 * 			the transaction to add
+	 * @return
+	 * 			the added transaction
+	 */
+	Transaction addTransaction(String accountId,Transaction transaction);
+	
+	
+	/**
+	 * update a transaction
+	 * @param transactionId
+	 * 			the transaction id to update
+	 * 
+	 * @param newTransaction
+	 * 			the new transaction
+	 */
+	void updateTransaction(String transactionId,Transaction newTransaction);
 }

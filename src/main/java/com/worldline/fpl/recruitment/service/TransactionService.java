@@ -10,7 +10,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.worldline.fpl.recruitment.controller.impl.TransactionControllerImpl;
 import com.worldline.fpl.recruitment.dao.TransactionRepository;
 import com.worldline.fpl.recruitment.entity.Transaction;
 import com.worldline.fpl.recruitment.exception.ServiceException;
@@ -81,23 +80,116 @@ public class TransactionService {
 	 * 			The transaction id
 	 */
 	public void deleteTransactionByAccount(String accountId,String transactionId) {
+		checkIfAccountExist(accountId);
+		checkIfTransactionExist(transactionId);
+		checkIfTransactionBelongToAccount(accountId, transactionId);
+		transactionRepository.deleteTransactionFromAccount(accountId, transactionId);
+		log.debug("transaction "+transactionId+ "deleted");
+	}
+
+
+	/**
+	 * create a new transaction
+	 * @param accountId
+	 * 			The account id
+	 * @param transaction
+	 * 			the transaction to add
+	 * @return the transaction response
+	 */
+	public TransactionResponse createTransaction(String accountId,
+			Transaction transaction) {
+
+		log.debug("Create a new transaction "+transaction + "in"+accountId);
+		
+		/**check if the new information of transaction are valid **/
+		checkIfTransactionIsValid(transaction);
+		
+		return  map(transactionRepository.addTransaction(accountId, transaction));
+	}
+
+
+	/**
+	 * Update a transaction
+	 * @param accountId
+	 * 			The account id
+	 * @param transactionId
+	 * 			The id of transaction to update
+	 * @param transaction
+	 * 			The new transaction information
+	 */
+	public void updateTransaction(String accountId,String transactionId,
+			Transaction transaction) {
+		//check if account exist
+		checkIfAccountExist(accountId);
+		
+		//check if transaction exist
+		checkIfTransactionExist(transactionId);
+		
+		//check if transaction belong to account
+		checkIfTransactionBelongToAccount(accountId,transactionId);
+		
+		//check if informations of transaction are valid
+		checkIfTransactionIsValid(transaction);
+		
+		//update transaction
+		transactionRepository.updateTransaction(transactionId, transaction);
+	}
+	
+	
+	/**
+	 * check if account exist
+	 * @param accountId
+	 * 		the account id
+	 */
+	private void checkIfAccountExist(String accountId) {
 		if (!accountService.isAccountExist(accountId)) {
-			log.error("Account doesn't exixt");
 			throw new ServiceException(ErrorCode.NOT_FOUND_ACCOUNT,
 					"Account doesn't exist");
 		}
+	}
+	
+	
+	/**
+	 * check if transaction belong to account
+	 * @param accountId
+	 * 			the account id
+	 * @param transactionId
+	 * 			The transaction id
+	 */
+	private void checkIfTransactionBelongToAccount(String accountId,
+			String transactionId) {
+		if (!transactionRepository.transactionBelongToAccount(accountId,transactionId)) {
+			log.error("transaction not belong to the account"); 
+			throw new ServiceException(ErrorCode.FORBIDDEN_TRANSACTION,
+					"transaction not belong to the account");
+		}
+	}
+
+	
+	/**
+	 * check if transaction exist
+	 * @param transactionId
+	 * 			The transaction id
+	 */
+	private void checkIfTransactionExist(String transactionId) {
 		if (!transactionRepository.transactionExists(transactionId)) {
 			log.error("Transaction doesn't exixt");
 			throw new ServiceException(ErrorCode.NOT_FOUND_TRANSACTION,
 					"Transaction doesn't exist");
 		}
-		if (!transactionRepository.transactionBelongToAccount(accountId,transactionId)) {
-			log.error("transaction not belong to the account"); 
-			throw new ServiceException(ErrorCode.FORBIDDEN_TRANSACTION,
-			 "transaction not belong to the account");
-			 }
-		transactionRepository.deleteTransactionFromAccount(accountId, transactionId);
-		log.debug("transaction "+transactionId+ "deleted");
 	}
-
+	
+	
+	/**
+	 * check if the informations of transaction are valid
+	 * @param transaction
+	 */
+	private void checkIfTransactionIsValid(Transaction transaction) {
+		if ( transaction.getBalance() == null
+				|| transaction.getNumber() == null) {
+			log.error("Invalid transaction"+transaction);
+			throw new ServiceException(ErrorCode.INVALID_REQUEST,
+					"Invalid transaction");
+		}
+	}
 }

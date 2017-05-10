@@ -6,9 +6,11 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.worldline.fpl.recruitment.entity.Transaction;
 import com.worldline.fpl.recruitment.json.TransactionResponse;
 
 /**
@@ -33,7 +35,7 @@ public interface TransactionController {
 	ResponseEntity<Page<TransactionResponse>> getTransactionsByAccount(
 			@PathVariable("accountId") String accountId,
 			@PageableDefault Pageable p);
-	
+
 	/**
 	 * Remove transaction from account
 	 * @param accountId
@@ -45,7 +47,35 @@ public interface TransactionController {
 	 */
 	@RequestMapping(value = "/{transactionId}", method = RequestMethod.DELETE)
 	ResponseEntity<Void> deleteTransactionsByAccount(
-	@PathVariable("accountId") String accountId,
-	@PathVariable("transactionId") String transactionId);
+			@PathVariable("accountId") String accountId,
+			@PathVariable("transactionId") String transactionId);
+
+	/**
+	 * Add a new transaction to account
+	 * @param accountId
+	 * 			The account id
+	 * @param transaction
+	 * 			The transaction id
+	 * @return
+	 * 		the response entity
+	 */
+	@RequestMapping(value = "", method = RequestMethod.POST)
+	ResponseEntity<TransactionResponse> addTransaction(@PathVariable("accountId") String accountId,
+			@RequestBody Transaction transaction);
+
+	/**
+	 * Update an existing transaction
+	 * @param accountId
+	 * 			the account id
+	 * @param transactionId	
+	 * 			the id of old transaction
+	 * @param newTransaction
+	 * 			the new response entity
+	 * @return
+	 */
+	@RequestMapping(value = "/{transactionId}", method = RequestMethod.PUT)
+	ResponseEntity<TransactionResponse> updateTransaction(@PathVariable("accountId") String accountId,
+			@PathVariable("transactionId") String transactionId,
+			@RequestBody Transaction newTransaction);
 }
 

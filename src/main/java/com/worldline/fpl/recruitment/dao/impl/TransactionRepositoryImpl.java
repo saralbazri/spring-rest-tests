@@ -30,6 +30,7 @@ public class TransactionRepositoryImpl implements TransactionRepository,
 	public void afterPropertiesSet() throws Exception {
 		transactions = new ArrayList<>();
 		{
+			//Create a transaction
 			Transaction transaction = new Transaction();
 			transaction.setAccountId("1");
 			transaction.setBalance(BigDecimal.valueOf(42.12));
@@ -55,13 +56,32 @@ public class TransactionRepositoryImpl implements TransactionRepository,
 		}
 	}
 
+	
 	@Override
+	/**
+	 * find transation by id
+	 * @param id
+	 * 			the transaction id to update
+	 * 
+	 * @return
+	 * 			the transaction founded
+	 */
 	public Transaction findById(String id) {
 		return transactions.stream()
 				.filter(transaction -> transaction.getId().equals(id))
 				.findFirst().orElse(null);
 	}
 
+	
+	/**
+	 * get list transaction by account
+	 * @param accountID
+	 * 			the account id
+	 * 
+	 * @param p
+	 * 			the pageable object
+	 * 
+	 */
 	@Override
 	public Page<Transaction> getTransactionsByAccount(String accountId,
 			Pageable p) {
@@ -70,6 +90,15 @@ public class TransactionRepositoryImpl implements TransactionRepository,
 				.collect(Collectors.toList()));
 	}
 
+	
+	/**
+	 * Delete transaction from account
+	 * @param accountid
+	 * 			the account related to transaction
+	 * 
+	 * @param transactionId
+	 * 			the id of transaction to delete
+	 */
 	@Override
 	public void deleteTransactionFromAccount(String accountId,
 			String transactionId) {
@@ -78,15 +107,79 @@ public class TransactionRepositoryImpl implements TransactionRepository,
 		
 	}
 
+	/**
+	 * check if transaction exists
+	 * 
+	 * @param transactionId
+	 * 			the id of transaction 
+	 * return true if exists
+	 */
 	@Override
 	public boolean transactionExists(String transactionId) {
 		return transactions.stream().anyMatch(t -> t.getId().equals(transactionId));
 	}
+	
+	/**
+	 * check if transaction belong to account
+	 * 
+	 * @param accountId
+	 * 			the account id
+	 * @param transactionId
+	 * 			the id of transaction 
+	 * return true if transaction belong to account
+	 */
 	@Override
 	 public boolean transactionBelongToAccount(String accountId,
 	 			String transactionId) {
 	 		return transactions.stream().anyMatch(t ->  t.getAccountId().equals(accountId)
 	 				&& t.getId().equals(transactionId));
 	 	}
+
+	/**
+	 * add a new transaction
+	 * 
+	 * @param accountId
+	 * 			the account id
+	 * @param transaction
+	 * 			the transaction to add
+	 * return the added transaction
+	 */
+	@Override
+	public Transaction addTransaction(String accountId,Transaction transaction) {
+		transaction.setAccountId(accountId);
+		transaction.setId(getNextTransactionId());
+		transactions.add(transaction);
+		return transaction;
+	}
+
+	/**
+	 * update a transaction
+	 * 
+	 * @param transactionId
+	 * 			the id of transaction to update
+	 * @param newTransaction
+	 * 			the new transaction
+	 */
+	@Override
+	public void updateTransaction(String transactionId,Transaction newTransaction) {
+		transactions.stream().filter(t -> t.getId().equals(transactionId)).findFirst().ifPresent(
+					t -> {
+				 				t.setBalance(newTransaction.getBalance());
+				 				t.setNumber(newTransaction.getNumber());
+				 			}
+				 		)
+				 		;
+
+		
+	}
+	
+	/**
+	 * get the newt new transaction id
+	 * 
+	 *@return the new id
+	 */
+	private String getNextTransactionId(){
+		return Integer.toString(transactions.size()+1);
+	}
 
 }
