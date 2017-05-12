@@ -45,7 +45,7 @@ public class TransactionControllerImpl implements TransactionController {
 	 */
 	@Override
 	public ResponseEntity<Page<TransactionResponse>> getTransactionsByAccount(
-			@PathVariable("accountId") String accountId,
+			@PathVariable("accountId") Long accountId,
 			@PageableDefault Pageable p) {
 		Page<TransactionResponse> page = transactionService
 				.getTransactionsByAccount(accountId, p);
@@ -66,8 +66,8 @@ public class TransactionControllerImpl implements TransactionController {
 	 * 			The response entity
 	 */
 	@Override
-	public ResponseEntity<Void> deleteTransactionsByAccount(@PathVariable("accountId") String accountId,
-			@PathVariable("transactionId") String transactionId) {
+	public ResponseEntity<Void> deleteTransactionsByAccount(@PathVariable("accountId") Long accountId,
+			@PathVariable("transactionId") Long transactionId) {
 		log.debug("Deleting transaction:"+transactionId+" From account: "+accountId);
 		this.transactionService.deleteTransactionByAccount(accountId, transactionId);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
@@ -83,7 +83,7 @@ public class TransactionControllerImpl implements TransactionController {
 	 * 			The response entity
 	 */
 	@Override
-	public ResponseEntity<TransactionResponse> addTransaction(@PathVariable("accountId") String accountId,
+	public ResponseEntity<TransactionResponse> addTransaction(@PathVariable("accountId") Long accountId,
 			@RequestBody Transaction transaction) {
 		TransactionResponse transactionCreated = transactionService.createTransaction(accountId, transaction);
 		 return ResponseEntity.status(HttpStatus.CREATED).body(transactionCreated);
@@ -102,7 +102,7 @@ public class TransactionControllerImpl implements TransactionController {
 	 */
 	@Override
 	public ResponseEntity<TransactionResponse> updateTransaction(
-			@PathVariable("accountId") String accountId,@PathVariable("transactionId") String transactionId, @RequestBody Transaction transaction) {
+			@PathVariable("accountId") Long accountId,@PathVariable("transactionId") Long transactionId, @RequestBody Transaction transaction) {
 		transactionService.updateTransaction(accountId,transactionId, transaction);
 		 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 	}

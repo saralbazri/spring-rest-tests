@@ -2,6 +2,7 @@ package com.worldline.fpl.recruitment.json;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
@@ -19,7 +20,7 @@ public class AccountResponse implements Serializable {
 	private static final long serialVersionUID = 1311670657098492357L;
 
 	@NotNull
-	private String id;
+	private Long id;
 
 	@NotNull
 	private String number;

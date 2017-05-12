@@ -1,11 +1,16 @@
 spring:
   application:
     name: recruitment
-
+  jpa:
+hibernate:
+hbm2ddl.auto: create
+show-sql: true
+      
 server:
-  port: 8080
+  port: 8082
   context-path: /api
   
 logging:
   level:
     com.worldline.fpl.recruitment=DEBUG
+    

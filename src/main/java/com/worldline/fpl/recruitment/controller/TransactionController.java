@@ -33,7 +33,7 @@ public interface TransactionController {
 	 */
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	ResponseEntity<Page<TransactionResponse>> getTransactionsByAccount(
-			@PathVariable("accountId") String accountId,
+			@PathVariable("accountId") Long accountId,
 			@PageableDefault Pageable p);
 
 	/**
@@ -47,8 +47,8 @@ public interface TransactionController {
 	 */
 	@RequestMapping(value = "/{transactionId}", method = RequestMethod.DELETE)
 	ResponseEntity<Void> deleteTransactionsByAccount(
-			@PathVariable("accountId") String accountId,
-			@PathVariable("transactionId") String transactionId);
+			@PathVariable("accountId") Long accountId,
+			@PathVariable("transactionId") Long transactionId);
 
 	/**
 	 * Add a new transaction to account
@@ -60,7 +60,7 @@ public interface TransactionController {
 	 * 		the response entity
 	 */
 	@RequestMapping(value = "", method = RequestMethod.POST)
-	ResponseEntity<TransactionResponse> addTransaction(@PathVariable("accountId") String accountId,
+	ResponseEntity<TransactionResponse> addTransaction(@PathVariable("accountId") Long accountId,
 			@RequestBody Transaction transaction);
 
 	/**
@@ -74,8 +74,8 @@ public interface TransactionController {
 	 * @return
 	 */
 	@RequestMapping(value = "/{transactionId}", method = RequestMethod.PUT)
-	ResponseEntity<TransactionResponse> updateTransaction(@PathVariable("accountId") String accountId,
-			@PathVariable("transactionId") String transactionId,
+	ResponseEntity<TransactionResponse> updateTransaction(@PathVariable("accountId") Long accountId,
+			@PathVariable("transactionId") Long transactionId,
 			@RequestBody Transaction newTransaction);
 }
 

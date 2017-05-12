@@ -1,5 +1,6 @@
 package com.worldline.fpl.recruitment.service;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,10 @@ public class AccountService {
 				.getContent().stream().map(this::mapToAccountResponse)
 				.collect(Collectors.toList()));
 	}
+	
+	public Account findAccount(Long id){
+		return accountRepository.findOne(id);
+	}
 
 	/**
 	 * Check if an account exists
@@ -54,7 +59,7 @@ public class AccountService {
 	 *            the account id
 	 * @return true if the account exists
 	 */
-	public boolean isAccountExist(String accountId) {
+	public boolean isAccountExist(Long accountId) {
 		return accountRepository.exists(accountId);
 	}
 
@@ -65,12 +70,12 @@ public class AccountService {
 	 *            the account id
 	 * @return
 	 */
-	public AccountDetailsResponse getAccountDetails(String accountId) {
+	public AccountDetailsResponse getAccountDetails(Long accountId) {
 		log.debug("Find account {}", accountId);
-		Account account = accountRepository.findById(accountId).orElseThrow(
-				() -> new ServiceException(ErrorCode.NOT_FOUND_ACCOUNT,
-						"Account doesn't exist"));
-		return mapToAccountDetailsResponse(account);
+		Account account = Optional.ofNullable(accountRepository.findOne(accountId)).orElseThrow(
+  				() -> new ServiceException(ErrorCode.NOT_FOUND_ACCOUNT,
+  						"Account doesn't exist"));
+  		return mapToAccountDetailsResponse(account);
 	}
 
 	/**

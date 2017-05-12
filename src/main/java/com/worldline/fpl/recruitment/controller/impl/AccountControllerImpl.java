@@ -33,20 +33,20 @@ public class AccountControllerImpl implements AccountController {
 		this.accountService = accountService;
 	}
 
-	@Override
+	
 	public ResponseEntity<Page<AccountResponse>> getAccounts(
-			@PageableDefault Pageable p) {
+		@PageableDefault Pageable p) {
 		Page<AccountResponse> page = accountService.getAccounts(p);
 		if (null == page || page.getTotalElements() == 0) {
 			log.debug("Cannot find account");
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
 		return ResponseEntity.ok().body(page);
-	}
+}
 
 	@Override
 	public ResponseEntity<AccountDetailsResponse> getAccountDetails(
-			@PathVariable("accountId") String accountId) {
+			@PathVariable("accountId") Long accountId) {
 		return ResponseEntity.ok().body(
 				accountService.getAccountDetails(accountId));
 	}

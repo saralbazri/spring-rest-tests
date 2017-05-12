@@ -23,6 +23,6 @@ public class TransactionResponse extends AbstractTransaction implements
 	private static final long serialVersionUID = -2371720864101586328L;
 
 	@NotNull
-	private String id;
+	private Long id;
 
 }

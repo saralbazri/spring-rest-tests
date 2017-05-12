@@ -46,16 +46,12 @@ public class TransactionService {
 	 *            the pageable object
 	 * @return
 	 */
-	public Page<TransactionResponse> getTransactionsByAccount(String accountId,
+	public Page<TransactionResponse> getTransactionsByAccount(Long  accountId,
 			Pageable p) {
-		if (!accountService.isAccountExist(accountId)) {
-			log.error("Account doesn't exixt");
-			throw new ServiceException(ErrorCode.NOT_FOUND_ACCOUNT,
-					"Account doesn't exist");
-		}
-		return new PageImpl<TransactionResponse>(transactionRepository
-				.getTransactionsByAccount(accountId, p).getContent().stream()
-				.map(this::map).collect(Collectors.toList()));
+		checkIfAccountExist(accountId);
+		return new PageImpl<TransactionResponse>(accountService.findAccount(accountId).getTransactions()
+				 			.stream()
+				  				.map(this::map).collect(Collectors.toList()));
 	}
 
 	/**
@@ -79,11 +75,11 @@ public class TransactionService {
 	 * @param transactionId
 	 * 			The transaction id
 	 */
-	public void deleteTransactionByAccount(String accountId,String transactionId) {
+	public void deleteTransactionByAccount(Long accountId,Long transactionId) {
 		checkIfAccountExist(accountId);
 		checkIfTransactionExist(transactionId);
 		checkIfTransactionBelongToAccount(accountId, transactionId);
-		transactionRepository.deleteTransactionFromAccount(accountId, transactionId);
+		transactionRepository.delete(transactionId);
 		log.debug("transaction "+transactionId+ "deleted");
 	}
 
@@ -96,15 +92,15 @@ public class TransactionService {
 	 * 			the transaction to add
 	 * @return the transaction response
 	 */
-	public TransactionResponse createTransaction(String accountId,
+	public TransactionResponse createTransaction(Long accountId,
 			Transaction transaction) {
 
 		log.debug("Create a new transaction "+transaction + "in"+accountId);
 		
 		/**check if the new information of transaction are valid **/
 		checkIfTransactionIsValid(transaction);
-		
-		return  map(transactionRepository.addTransaction(accountId, transaction));
+		transaction.setAccount(accountService.findAccount(accountId));
+		return  map(transactionRepository.save(transaction));
 	}
 
 
@@ -117,7 +113,7 @@ public class TransactionService {
 	 * @param transaction
 	 * 			The new transaction information
 	 */
-	public void updateTransaction(String accountId,String transactionId,
+	public void updateTransaction(Long accountId,Long transactionId,
 			Transaction transaction) {
 		//check if account exist
 		checkIfAccountExist(accountId);
@@ -132,7 +128,9 @@ public class TransactionService {
 		checkIfTransactionIsValid(transaction);
 		
 		//update transaction
-		transactionRepository.updateTransaction(transactionId, transaction);
+		transaction.setId(transactionId);
+		transaction.setAccount(accountService.findAccount(accountId));
+		transactionRepository.saveAndFlush(transaction);
 	}
 	
 	
@@ -141,7 +139,7 @@ public class TransactionService {
 	 * @param accountId
 	 * 		the account id
 	 */
-	private void checkIfAccountExist(String accountId) {
+	private void checkIfAccountExist(Long accountId) {
 		if (!accountService.isAccountExist(accountId)) {
 			throw new ServiceException(ErrorCode.NOT_FOUND_ACCOUNT,
 					"Account doesn't exist");
@@ -156,9 +154,10 @@ public class TransactionService {
 	 * @param transactionId
 	 * 			The transaction id
 	 */
-	private void checkIfTransactionBelongToAccount(String accountId,
-			String transactionId) {
-		if (!transactionRepository.transactionBelongToAccount(accountId,transactionId)) {
+	private void checkIfTransactionBelongToAccount(Long accountId,
+			Long transactionId) {
+		Transaction transaction = transactionRepository.findOne(transactionId);
+		if(!transaction.getAccount().getId().equals(accountId)){
 			log.error("transaction not belong to the account"); 
 			throw new ServiceException(ErrorCode.FORBIDDEN_TRANSACTION,
 					"transaction not belong to the account");
@@ -171,8 +170,8 @@ public class TransactionService {
 	 * @param transactionId
 	 * 			The transaction id
 	 */
-	private void checkIfTransactionExist(String transactionId) {
-		if (!transactionRepository.transactionExists(transactionId)) {
+	private void checkIfTransactionExist(Long transactionId) {
+		if (!transactionRepository.exists(transactionId)) {
 			log.error("Transaction doesn't exixt");
 			throw new ServiceException(ErrorCode.NOT_FOUND_TRANSACTION,
 					"Transaction doesn't exist");
